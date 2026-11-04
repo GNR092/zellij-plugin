@@ -1,4 +1,4 @@
-# Zellij Plugin for Oh My Zsh
+# Plugin de Zellij para Oh My Zsh
 
 Plugin de Oh My Zsh que integra **Zellij** (terminal multiplexer) con completaciones de Zsh.
 
@@ -49,23 +49,40 @@ source ~/.zshrc
 
 ## Qué hace este plugin
 
-1. **Verifica que Zellij esté instalado** - Muestra advertencia si no lo está
-2. **Carga completaciones automáticas** - Desde `_zellij` para comandos, flags y layouts de Zellij
+1. **Verifica que Zellij esté instalado** - Muestra una advertencia si no lo está.
+2. **Completa la CLI** - `_zellij` se basa en `zellij setup --generate-completion zsh` e incluye mejoras locales para aliases y nombres de sesiones activas.
 
 ## Completaciones disponibles
 
-Al escribir `zellij <TAB>` obtienes:
-- Comandos: `action`, `attach`, `delete-session`, `edit`, `kill-all-sessions`, `kill-session`, `list-sessions`, `options`, `pipe`, `run`, `setup`, `start`, `version`
-- Flags globales y por comando
-- Nombres de sesiones existentes
-- Layouts disponibles
+El archivo incluido se verificó contra el generador de **Zellij 0.44.3** y conserva mejoras locales. Al escribir `zellij <TAB>` aparecen estos subcomandos y aliases:
+
+- `action` (`ac`), `attach` (`a`), `convert-config`, `convert-layout`, `convert-theme`.
+- `delete-all-sessions` (`da`), `delete-session` (`d`), `edit` (`e`), `help`.
+- `kill-all-sessions` (`ka`), `kill-session` (`k`), `list-aliases` (`la`), `list-sessions` (`ls`).
+- `options`, `pipe`, `plugin` (`p`), `run` (`r`), `setup`, `subscribe`, `watch` (`w`), `web`.
+
+`--version` es una opción, no un subcomando. `action` tiene sus propios subcomandos (por ejemplo, `new-pane`, `new-tab` y `switch-session`); consúltalos con `zellij action --help`. `setup` ofrece opciones, no subcomandos; entre ellas `--generate-completion <SHELL>`.
+
+También completa:
+
+- Nombres de sesiones activas para `attach`, `watch`, `kill-session`, `delete-session` y `action switch-session`.
+- Flags de comandos y subcomandos.
+- Rutas de archivos para opciones de layout; no enumera automáticamente los layouts predefinidos.
+
+## Funciones auxiliares
+
+El archivo `_zellij` también define estas funciones de shell:
+
+- `zr`, `zrf`, `zri`: ejecutan un comando con `zellij run` en un panel normal, flotante o en el lugar.
+- `ze`, `zef`, `zei`: abren archivos con `zellij edit` en un panel normal, flotante o en el lugar.
+- `zpipe [plugin]`: ejecuta `zellij pipe`, opcionalmente indicando un plugin.
 
 ## Estructura
 
 ```
 zellij/
-├── zellij.plugin.zsh    # Plugin principal (carga completions)
-├── _zellij              # Completaciones completas de Zsh
+├── zellij.plugin.zsh    # Comprueba que Zellij esté instalado
+├── _zellij              # Completaciones de Zsh y mejoras locales
 └── README.md            # Este archivo
 ```
 
@@ -80,6 +97,16 @@ rm -f ~/.zcompdump*
 exec zsh
 ```
 
+### Actualizar las completaciones
+
+La CLI actual genera la base con:
+
+```bash
+zellij setup --generate-completion zsh > /tmp/_zellij
+```
+
+Compara esa salida con `_zellij` e integra los cambios conservando las mejoras locales de aliases y sesiones dinámicas; reemplazar el archivo completo las eliminaría.
+
 ## Actualizar
 
 ```bash
@@ -90,4 +117,4 @@ source ~/.zshrc
 
 ## Licencia
 
-MIT - Basado en completaciones oficiales de Zellij
+MIT - Basado en el generador oficial de Zellij, con completaciones locales de aliases y sesiones.
